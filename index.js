@@ -40,7 +40,13 @@ function getPredefinedColor() {
 
 function setColor(color) {
   document.body.style.backgroundColor = color;
-  colorDisplay.textContent = 'Current Color: ' + color;
+
+  // Animate color display
+  colorDisplay.classList.remove('show');
+  setTimeout(() => {
+    colorDisplay.textContent = 'Current Color: ' + color;
+    colorDisplay.classList.add('show');
+  }, 100);
 
   // Add to history
   addToHistory(color);
@@ -112,4 +118,8 @@ copyButton.addEventListener('click', () => {
 darkModeToggle.addEventListener('change', () => {
   document.body.classList.toggle('dark-mode', darkModeToggle.checked);
 });
- 
+
+// Init animation state
+window.addEventListener('DOMContentLoaded', () => {
+  colorDisplay.classList.add('show');
+});

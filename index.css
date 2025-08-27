@@ -1,3 +1,4 @@
+/* Base Layout */
 body {
   display: flex;
   flex-direction: column;
@@ -7,18 +8,18 @@ body {
   height: 100vh;
   margin: 0;
   font-family: Arial, sans-serif;
-  transition: background-color 0.5s ease, color 0.3s ease;
   background-color: #ffffff;
   color: #000000;
   text-align: center;
+  transition: background-color 0.5s ease, color 0.3s ease;
 }
 
-/* Dark mode styles */
 body.dark-mode {
   background-color: #1e1e1e;
   color: #ffffff;
 }
 
+/* Dropdown and Label */
 label {
   font-size: 1rem;
   margin-top: 10px;
@@ -33,12 +34,25 @@ select {
   border: 1px solid #ccc;
 }
 
+/* Color Display */
 #colorDisplay {
   font-size: 1.5rem;
   margin: 20px;
   cursor: pointer;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
+.fade-in {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fade-in.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Buttons */
 button {
   padding: 10px 20px;
   font-size: 1rem;
@@ -48,8 +62,14 @@ button {
   color: #fff;
   border-radius: 5px;
   margin: 5px;
+  transition: background-color 0.3s ease;
 }
 
+button:hover {
+  background-color: #555;
+}
+
+/* Copy message */
 #copyMsg {
   font-size: 0.9rem;
   color: green;
@@ -57,7 +77,7 @@ button {
   height: 20px;
 }
 
-/* Toggle switch styling */
+/* Dark mode toggle */
 .toggle-container {
   display: flex;
   align-items: center;
@@ -81,10 +101,7 @@ button {
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: #ccc;
   border-radius: 34px;
   transition: .4s;
@@ -98,8 +115,8 @@ button {
   left: 3px;
   bottom: 3px;
   background-color: white;
-  transition: .4s;
   border-radius: 50%;
+  transition: .4s;
 }
 
 input:checked + .slider {
@@ -114,7 +131,7 @@ input:checked + .slider:before {
   font-size: 1rem;
 }
 
-/* Color history styles */
+/* Color history section */
 .color-history {
   display: flex;
   flex-wrap: wrap;
@@ -130,7 +147,19 @@ input:checked + .slider:before {
   border: 2px solid #00000033;
   border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.2s;
+  animation: scaleIn 0.3s ease forwards;
+  opacity: 0;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .color-box:hover {
