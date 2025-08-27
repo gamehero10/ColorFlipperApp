@@ -6,6 +6,7 @@ const colorModeSelect = document.getElementById('colorMode');
 const darkModeToggle = document.getElementById('darkModeToggle');
 const lockToggle = document.getElementById('lockToggle');
 const colorHistoryContainer = document.getElementById('colorHistory');
+const colorPaletteContainer = document.getElementById('colorPalette');
 
 const predefinedColors = [
   '#FF5733', '#33FF57', '#3357FF',
@@ -42,7 +43,6 @@ function getPredefinedColor() {
 function setColor(color) {
   document.body.style.backgroundColor = color;
 
-  // Animate color display
   colorDisplay.classList.remove('show');
   setTimeout(() => {
     colorDisplay.textContent = 'Current Color: ' + color;
@@ -50,21 +50,21 @@ function setColor(color) {
   }, 100);
 
   addToHistory(color);
+  generatePalette(color);
 }
 
 function addToHistory(color) {
   if (colorHistory.includes(color)) return;
-
   colorHistory.unshift(color);
   if (colorHistory.length > 10) {
     colorHistory.pop();
   }
-  renderHistory();
+  renderColorList(colorHistory, colorHistoryContainer);
 }
 
-function renderHistory() {
-  colorHistoryContainer.innerHTML = '';
-  colorHistory.forEach(color => {
+function renderColorList(colors, container) {
+  container.innerHTML = '';
+  colors.forEach(color => {
     const box = document.createElement('div');
     box.classList.add('color-box');
     box.style.backgroundColor = color;
@@ -72,8 +72,27 @@ function renderHistory() {
     box.addEventListener('click', () => {
       setColor(color);
     });
-    colorHistoryContainer.appendChild(box);
+    container.appendChild(box);
   });
+}
+
+function generatePalette(baseColor) {
+  const palette = [];
+
+  try {
+    const base = chroma(baseColor);
+
+    palette.push(base.hex()); // base
+    palette.push(base.brighten(1).hex()); // brighter
+    palette.push(base.darken(1).hex()); // darker
+    palette.push(base.set('hsl.h', '+30').hex()); // hue +30
+    palette.push(base.set('hsl.h', '-30').hex()); // hue -30
+
+    renderColorList(palette, colorPaletteContainer);
+  } catch (error) {
+    console.warn('Palette generation failed for color:', baseColor);
+    colorPaletteContainer.innerHTML = '';
+  }
 }
 
 flipButton.addEventListener('click', () => {
