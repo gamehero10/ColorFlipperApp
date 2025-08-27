@@ -4,6 +4,7 @@ const colorDisplay = document.getElementById('colorDisplay');
 const copyMsg = document.getElementById('copyMsg');
 const colorModeSelect = document.getElementById('colorMode');
 const darkModeToggle = document.getElementById('darkModeToggle');
+const lockToggle = document.getElementById('lockToggle');
 const colorHistoryContainer = document.getElementById('colorHistory');
 
 const predefinedColors = [
@@ -48,7 +49,6 @@ function setColor(color) {
     colorDisplay.classList.add('show');
   }, 100);
 
-  // Add to history
   addToHistory(color);
 }
 
@@ -77,24 +77,21 @@ function renderHistory() {
 }
 
 flipButton.addEventListener('click', () => {
+  if (lockToggle.checked) {
+    copyMsg.style.color = 'orange';
+    copyMsg.textContent = 'Color is locked.';
+    return;
+  }
+
   let newColor;
   const mode = colorModeSelect.value;
 
   switch (mode) {
-    case 'hex':
-      newColor = getRandomHex();
-      break;
-    case 'rgb':
-      newColor = getRandomRgb();
-      break;
-    case 'hsl':
-      newColor = getRandomHsl();
-      break;
-    case 'predefined':
-      newColor = getPredefinedColor();
-      break;
-    default:
-      newColor = getRandomHex();
+    case 'hex': newColor = getRandomHex(); break;
+    case 'rgb': newColor = getRandomRgb(); break;
+    case 'hsl': newColor = getRandomHsl(); break;
+    case 'predefined': newColor = getPredefinedColor(); break;
+    default: newColor = getRandomHex();
   }
 
   setColor(newColor);
@@ -119,7 +116,6 @@ darkModeToggle.addEventListener('change', () => {
   document.body.classList.toggle('dark-mode', darkModeToggle.checked);
 });
 
-// Init animation state
 window.addEventListener('DOMContentLoaded', () => {
   colorDisplay.classList.add('show');
 });

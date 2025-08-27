@@ -19,7 +19,6 @@ body.dark-mode {
   color: #ffffff;
 }
 
-/* Dropdown and Label */
 label {
   font-size: 1rem;
   margin-top: 10px;
@@ -28,10 +27,16 @@ label {
 select {
   font-size: 1rem;
   padding: 5px 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   cursor: pointer;
   border-radius: 5px;
   border: 1px solid #ccc;
+}
+
+/* Lock toggle */
+.lock-container {
+  margin-bottom: 20px;
+  font-size: 1rem;
 }
 
 /* Color Display */
@@ -69,7 +74,6 @@ button:hover {
   background-color: #555;
 }
 
-/* Copy message */
 #copyMsg {
   font-size: 0.9rem;
   color: green;
