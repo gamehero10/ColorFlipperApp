@@ -3,16 +3,12 @@ const copyButton = document.getElementById('copyBtn');
 const colorDisplay = document.getElementById('colorDisplay');
 const copyMsg = document.getElementById('copyMsg');
 const colorModeSelect = document.getElementById('colorMode');
+const darkModeToggle = document.getElementById('darkModeToggle');
 
 const predefinedColors = [
-  '#FF5733', // Red-Orange
-  '#33FF57', // Green
-  '#3357FF', // Blue
-  '#F3FF33', // Yellow
-  '#FF33F6', // Pink
-  '#33FFF6', // Cyan
-  '#A833FF', // Purple
-  '#FF8C33', // Orange
+  '#FF5733', '#33FF57', '#3357FF',
+  '#F3FF33', '#FF33F6', '#33FFF6',
+  '#A833FF', '#FF8C33'
 ];
 
 function getRandomHex() {
@@ -28,9 +24,9 @@ function getRandomRgb() {
 }
 
 function getRandomHsl() {
-  const h = Math.floor(Math.random() * 361); // 0-360
-  const s = Math.floor(Math.random() * 101); // 0-100%
-  const l = Math.floor(Math.random() * 101); // 0-100%
+  const h = Math.floor(Math.random() * 361);
+  const s = Math.floor(Math.random() * 101);
+  const l = Math.floor(Math.random() * 101);
   return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
@@ -66,7 +62,7 @@ flipButton.addEventListener('click', () => {
   }
 
   setColor(newColor);
-  copyMsg.textContent = ''; // Clear copy message
+  copyMsg.textContent = '';
 });
 
 copyButton.addEventListener('click', () => {
@@ -81,4 +77,8 @@ copyButton.addEventListener('click', () => {
       copyMsg.style.color = 'red';
       copyMsg.textContent = 'Failed to copy.';
     });
+});
+
+darkModeToggle.addEventListener('change', () => {
+  document.body.classList.toggle('dark-mode', darkModeToggle.checked);
 });
