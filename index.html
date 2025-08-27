@@ -9,12 +9,21 @@
 <body>
 
   <h1>Color Flipper</h1>
+
+  <label for="colorMode">Select Color Mode:</label>
+  <select id="colorMode">
+    <option value="hex">Random Hex</option>
+    <option value="rgb">Random RGB</option>
+    <option value="hsl">Random HSL</option>
+    <option value="predefined">Predefined Colors</option>
+  </select>
+
   <div id="colorDisplay">Current Color: #ffffff</div>
   <button id="flipBtn">Flip Color</button>
   <button id="copyBtn">Copy Color</button>
 
   <p id="copyMsg"></p>
 
-  <script src="index.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
