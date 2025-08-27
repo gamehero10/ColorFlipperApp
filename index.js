@@ -4,12 +4,15 @@ const colorDisplay = document.getElementById('colorDisplay');
 const copyMsg = document.getElementById('copyMsg');
 const colorModeSelect = document.getElementById('colorMode');
 const darkModeToggle = document.getElementById('darkModeToggle');
+const colorHistoryContainer = document.getElementById('colorHistory');
 
 const predefinedColors = [
   '#FF5733', '#33FF57', '#3357FF',
   '#F3FF33', '#FF33F6', '#33FFF6',
   '#A833FF', '#FF8C33'
 ];
+
+let colorHistory = [];
 
 function getRandomHex() {
   const hex = Math.floor(Math.random() * 0xffffff).toString(16);
@@ -38,6 +41,33 @@ function getPredefinedColor() {
 function setColor(color) {
   document.body.style.backgroundColor = color;
   colorDisplay.textContent = 'Current Color: ' + color;
+
+  // Add to history
+  addToHistory(color);
+}
+
+function addToHistory(color) {
+  if (colorHistory.includes(color)) return;
+
+  colorHistory.unshift(color);
+  if (colorHistory.length > 10) {
+    colorHistory.pop();
+  }
+  renderHistory();
+}
+
+function renderHistory() {
+  colorHistoryContainer.innerHTML = '';
+  colorHistory.forEach(color => {
+    const box = document.createElement('div');
+    box.classList.add('color-box');
+    box.style.backgroundColor = color;
+    box.title = color;
+    box.addEventListener('click', () => {
+      setColor(color);
+    });
+    colorHistoryContainer.appendChild(box);
+  });
 }
 
 flipButton.addEventListener('click', () => {
@@ -82,3 +112,4 @@ copyButton.addEventListener('click', () => {
 darkModeToggle.addEventListener('change', () => {
   document.body.classList.toggle('dark-mode', darkModeToggle.checked);
 });
+ 
