@@ -62,18 +62,25 @@ function addToHistory(color) {
   renderColorList(colorHistory, colorHistoryContainer);
 }
 
+// 🔧 Optimized function
 function renderColorList(colors, container) {
-  container.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+
   colors.forEach(color => {
     const box = document.createElement('div');
-    box.classList.add('color-box');
+    box.className = 'color-box';
     box.style.backgroundColor = color;
     box.title = color;
+
     box.addEventListener('click', () => {
       setColor(color);
     });
-    container.appendChild(box);
+
+    fragment.appendChild(box);
   });
+
+  container.innerHTML = ''; // Clear existing
+  container.appendChild(fragment); // Append optimized
 }
 
 function generatePalette(baseColor) {
@@ -82,15 +89,15 @@ function generatePalette(baseColor) {
   try {
     const base = chroma(baseColor);
 
-    palette.push(base.hex()); // base
-    palette.push(base.brighten(1).hex()); // brighter
-    palette.push(base.darken(1).hex()); // darker
-    palette.push(base.set('hsl.h', '+30').hex()); // hue +30
-    palette.push(base.set('hsl.h', '-30').hex()); // hue -30
+    palette.push(base.hex());                        // Base
+    palette.push(base.brighten(1).hex());            // Brighter
+    palette.push(base.darken(1).hex());              // Darker
+    palette.push(base.set('hsl.h', '+30').hex());    // Hue +30
+    palette.push(base.set('hsl.h', '-30').hex());    // Hue -30
 
     renderColorList(palette, colorPaletteContainer);
   } catch (error) {
-    console.warn('Palette generation failed for color:', baseColor);
+    console.warn('Palette generation failed:', baseColor);
     colorPaletteContainer.innerHTML = '';
   }
 }
