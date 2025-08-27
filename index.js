@@ -11,46 +11,68 @@ const colorPaletteContainer = document.getElementById('colorPalette');
 const predefinedColors = [
   '#FF5733', '#33FF57', '#3357FF',
   '#F3FF33', '#FF33F6', '#33FFF6',
-  '#A833FF', '#FF8C33'
+  '#A833FF', '#FF8C33' 
 ];
 
 let colorHistory = [];
 
 function getRandomHex() {
-  const hex = Math.floor(Math.random() * 0xffffff).toString(16);
-  return '#' + hex.padStart(6, '0');
+  try {
+    const hex = Math.floor(Math.random() * 0xffffff).toString(16);
+    return '#' + hex.padStart(6, '0');
+  } catch {
+    return '#000000'; // fallback
+  }
 }
 
 function getRandomRgb() {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgb(${r}, ${g}, ${b})`;
+  try {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgb(${r}, ${g}, ${b})`;
+  } catch {
+    return 'rgb(0, 0, 0)';
+  }
 }
 
 function getRandomHsl() {
-  const h = Math.floor(Math.random() * 361);
-  const s = Math.floor(Math.random() * 101);
-  const l = Math.floor(Math.random() * 101);
-  return `hsl(${h}, ${s}%, ${l}%)`;
+  try {
+    const h = Math.floor(Math.random() * 361);
+    const s = Math.floor(Math.random() * 101);
+    const l = Math.floor(Math.random() * 101);
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  } catch {
+    return 'hsl(0, 0%, 0%)';
+  }
 }
 
 function getPredefinedColor() {
-  const index = Math.floor(Math.random() * predefinedColors.length);
-  return predefinedColors[index];
+  try {
+    const index = Math.floor(Math.random() * predefinedColors.length);
+    return predefinedColors[index];
+  } catch {
+    return '#000000';
+  }
 }
 
 function setColor(color) {
-  document.body.style.backgroundColor = color;
+  try {
+    document.body.style.backgroundColor = color;
 
-  colorDisplay.classList.remove('show');
-  setTimeout(() => {
-    colorDisplay.textContent = 'Current Color: ' + color;
-    colorDisplay.classList.add('show');
-  }, 100);
+    colorDisplay.classList.remove('show');
+    setTimeout(() => {
+      colorDisplay.textContent = 'Current Color: ' + color;
+      colorDisplay.classList.add('show');
+    }, 100);
 
-  addToHistory(color);
-  generatePalette(color);
+    addToHistory(color);
+    generatePalette(color);
+  } catch (error) {
+    console.error('Failed to set color:', error);
+    copyMsg.style.color = 'red';
+    copyMsg.textContent = 'Error: Invalid color format.';
+  }
 }
 
 function addToHistory(color) {
@@ -62,7 +84,6 @@ function addToHistory(color) {
   renderColorList(colorHistory, colorHistoryContainer);
 }
 
-// 🔧 Optimized function
 function renderColorList(colors, container) {
   const fragment = document.createDocumentFragment();
 
@@ -73,31 +94,36 @@ function renderColorList(colors, container) {
     box.title = color;
 
     box.addEventListener('click', () => {
-      setColor(color);
+      try {
+        setColor(color);
+      } catch (err) {
+        console.warn('Failed to apply color from list:', err);
+      }
     });
 
     fragment.appendChild(box);
   });
 
-  container.innerHTML = ''; // Clear existing
-  container.appendChild(fragment); // Append optimized
+  container.innerHTML = '';
+  container.appendChild(fragment);
 }
 
 function generatePalette(baseColor) {
-  const palette = [];
-
   try {
     const base = chroma(baseColor);
-
-    palette.push(base.hex());                        // Base
-    palette.push(base.brighten(1).hex());            // Brighter
-    palette.push(base.darken(1).hex());              // Darker
-    palette.push(base.set('hsl.h', '+30').hex());    // Hue +30
-    palette.push(base.set('hsl.h', '-30').hex());    // Hue -30
+    const palette = [
+      base.hex(),
+      base.brighten(1).hex(),
+      base.darken(1).hex(),
+      base.set('hsl.h', '+30').hex(),
+      base.set('hsl.h', '-30').hex()
+    ];
 
     renderColorList(palette, colorPaletteContainer);
   } catch (error) {
-    console.warn('Palette generation failed:', baseColor);
+    console.warn('Palette generation failed for:', baseColor);
+    copyMsg.style.color = 'red';
+    copyMsg.textContent = 'Palette generation failed.';
     colorPaletteContainer.innerHTML = '';
   }
 }
@@ -109,37 +135,53 @@ flipButton.addEventListener('click', () => {
     return;
   }
 
-  let newColor;
-  const mode = colorModeSelect.value;
+  try {
+    let newColor;
+    const mode = colorModeSelect.value;
 
-  switch (mode) {
-    case 'hex': newColor = getRandomHex(); break;
-    case 'rgb': newColor = getRandomRgb(); break;
-    case 'hsl': newColor = getRandomHsl(); break;
-    case 'predefined': newColor = getPredefinedColor(); break;
-    default: newColor = getRandomHex();
+    switch (mode) {
+      case 'hex': newColor = getRandomHex(); break;
+      case 'rgb': newColor = getRandomRgb(); break;
+      case 'hsl': newColor = getRandomHsl(); break;
+      case 'predefined': newColor = getPredefinedColor(); break;
+      default: newColor = getRandomHex();
+    }
+
+    setColor(newColor);
+    copyMsg.textContent = '';
+  } catch (err) {
+    console.error('Error during color flip:', err);
+    copyMsg.style.color = 'red';
+    copyMsg.textContent = 'Failed to flip color.';
   }
-
-  setColor(newColor);
-  copyMsg.textContent = '';
 });
 
 copyButton.addEventListener('click', () => {
-  const color = colorDisplay.textContent.replace('Current Color: ', '').trim();
+  try {
+    const color = colorDisplay.textContent.replace('Current Color: ', '').trim();
 
-  navigator.clipboard.writeText(color)
-    .then(() => {
-      copyMsg.style.color = 'green';
-      copyMsg.textContent = 'Color copied to clipboard!';
-    })
-    .catch(() => {
-      copyMsg.style.color = 'red';
-      copyMsg.textContent = 'Failed to copy.';
-    });
+    navigator.clipboard.writeText(color)
+      .then(() => {
+        copyMsg.style.color = 'green';
+        copyMsg.textContent = 'Color copied to clipboard!';
+      })
+      .catch(() => {
+        copyMsg.style.color = 'red';
+        copyMsg.textContent = 'Failed to copy.';
+      });
+  } catch (err) {
+    console.error('Copy error:', err);
+    copyMsg.style.color = 'red';
+    copyMsg.textContent = 'Clipboard error.';
+  }
 });
 
 darkModeToggle.addEventListener('change', () => {
-  document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+  try {
+    document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+  } catch (err) {
+    console.warn('Dark mode toggle failed:', err);
+  }
 });
 
 window.addEventListener('DOMContentLoaded', () => {
